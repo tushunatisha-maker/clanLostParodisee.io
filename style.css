@@ -1,0 +1,15 @@
+/* Красивый анимированный градиентный фон */
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(-45deg, #ff7e5f, #feb47b, #6a11cb, #2575fc);
+  background-size: 400% 400%;
+  animation: gradientMove 20s ease infinite;
+}
+
+/* Анимация плавного движения градиента */
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}

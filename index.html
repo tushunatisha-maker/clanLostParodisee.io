@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Набор в клан 𝕃𝕠𝕤𝕥ℙ𝕒𝕣𝕠𝕕𝕚𝕤𝔼</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: linear-gradient(-45deg, #ff7e5f, #feb47b, #6a11cb, #2575fc);
+    background-size: 400% 400%;
+    color: #fff;
+    transition: background 0.8s ease;
+}
+.container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+}
+h2, h3 { text-align: center; }
+#registration, #welcome, #profiles { 
+    background: rgba(0,0,0,0.6); 
+    padding: 20px; 
+    border-radius: 15px; 
+    box-shadow: 0 0 15px rgba(0,0,0,0.5); 
+    margin-bottom: 20px; 
+}
+input, select, textarea { width: 100%; padding: 8px; margin: 5px 0 15px; border-radius: 5px; border: none; }
+button { padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer; background: #4CAF50; color: #fff; font-weight: bold; }
+.announcement { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; text-align: center; line-height: 1.5; margin-bottom: 20px; }
+.profile { background: rgba(255,255,255,0.1); padding: 15px; margin: 10px 0; border-radius: 10px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
+.profile-info { flex: 1; white-space: pre-line; }
+.like { background: #4CAF50; margin-left:5px; }
+.dislike { background: #f44336; margin-left:5px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div id="welcome">
+    <h2>Набор в клан 𝕃𝕠𝕤𝕥ℙ𝕒𝕣𝕠𝕕𝕚𝕤𝔼</h2>
+    <div class="announcement">
+        Будем рады всем.<br>
+        По вопросам писать в TG: @berserkprime<br>
+        С вас требуется активность и адекватность.<br>
+        Смена ника не обязательна ✨
+    </div>
+
+    <h3>Отправить свою анкету</h3>
+    <div id="registrationForm">
+        <input type="text" id="pName" placeholder="Имя">
+        <input type="text" id="pNick" placeholder="Ник">
+        <input type="number" id="pAge" placeholder="Возраст">
+        <input type="text" id="pID" placeholder="Айди">
+        <input type="text" id="pTime" placeholder="Время (МСК)">
+        <select id="pActive">
+            <option value="Актив">Актив</option>
+            <option value="Не актив">Не актив</option>
+        </select>
+        <input type="text" id="pAdequate" placeholder="Адекватность">
+        <input type="text" id="pTelegram" placeholder="Telegram">
+        <button onclick="submitProfile()">Отправить анкету</button>
+    </div>
+    <div id="confirmationMessage" style="display:none; text-align:center; margin-top:10px; color:#FFD700; font-weight:bold;">
+        Анкета отправлена, ожидайте проверки
+    </div>
+</div>
+
+<div id="profiles" style="display:block;">
+    <h3>Анкеты участников</h3>
+    <div id="profileList"></div>
+</div>
+
+</div>
+
+<script>
+// Получаем сохраненные анкеты из localStorage
+let profilesData = JSON.parse(localStorage.getItem('profilesData')) || [];
+
+// Функция отправки анкеты
+function submitProfile() {
+    const profile = {
+        name: document.getElementById('pName').value.trim(),
+        nick: document.getElementById('pNick').value.trim(),
+        age: document.getElementById('pAge').value.trim(),
+        id: document.getElementById('pID').value.trim(),
+        time: document.getElementById('pTime').value.trim(),
+        active: document.getElementById('pActive').value,
+        adequate: document.getElementById('pAdequate').value.trim(),
+        telegram: document.getElementById('pTelegram').value.trim()
+    };
+
+    // Проверка заполнения обязательных полей
+    if(!profile.name || !profile.nick || !profile.age) {
+        alert("Пожалуйста, заполните обязательные поля: Имя, Ник, Возраст");
+        return;
+    }
+
+    profilesData.push(profile);
+    localStorage.setItem('profilesData', JSON.stringify(profilesData));
+    renderProfiles();
+
+    // Очистка формы
+    document.getElementById('registrationForm').reset();
+
+    // Показ сообщения
+    const confirm = document.getElementById('confirmationMessage');
+    confirm.style.display = 'block';
+    setTimeout(() => { confirm.style.display = 'none'; }, 3000);
+}
+
+// Функция отображения всех анкет
+function renderProfiles() {
+    const list = document.getElementById('profileList');
+    list.innerHTML = '';
+    profilesData.forEach((p, index) => {
+        const div = document.createElement('div');
+        div.className = 'profile';
+        div.innerHTML = `
+            <div class="profile-info">
+<strong>${p.name}</strong><br>
+Ник: ${p.nick}<br>
+Возраст: ${p.age}<br>
+Айди: ${p.id}<br>
+Время (МСК): ${p.time}<br>
+Активность: ${p.active}<br>
+Адекватность: ${p.adequate}<br>
+Telegram: ${p.telegram}
+            </div>
+            <div>
+                <button class="like" onclick="likeProfile(${index})">👍</button>
+                <button class="dislike" onclick="dislikeProfile(${index})">👎</button>
+            </div>
+        `;
+        list.appendChild(div);
+    });
+}
+
+// Лайк/дизлайк
+function likeProfile(index){ alert(`Вы лайкнули ${profilesData[index].name}`); }
+function dislikeProfile(index){ alert(`Вы дизлайкнули ${profilesData[index].name}`); }
+
+// Загрузка при открытии страницы
+if(profilesData.length > 0){
+    renderProfiles();
+}
+</script>
+
+</body>
+</html>
